@@ -22,39 +22,39 @@ class MainActivity : AppCompatActivity() {
 
         initUi()
         initListeners()
-        initObserbers()
+        initObservers()
     }
 
     //##############################################################
     // Funciones de Inicializacion
     //###############################################################
-    private fun initListeners() {
-
-        // Pulsacion Tecla ENTER
-        binding.etFuncion.pulsacionTeclaEnter{
-            etFuncionKeyEnter(binding.etFuncion.text.toString().trim())
-        }
-        binding.etLimiteInferior.pulsacionTeclaEnter {
-            etLimiteInferiorKeyEnter()
-        }
-        binding.etLimiteSuperior.pulsacionTeclaEnter {
-            etLimiteSuperiorKeyEnter()
-        }
-
-        //Click
-        binding.btnGraficar.setOnClickListener {
-            btnGraficaClick()
-        }
-    }
     private fun initUi() {
-        binding.etLimiteInferior.isEnabled = false
-        binding.etLimiteSuperior.isEnabled = false
-        binding.btnGraficar.isEnabled = false
-        binding.etFuncion.requestFocus()
+        with(binding){
+            etLimiteInferior.isEnabled = false
+            etLimiteSuperior.isEnabled = false
+            btnGraficar.isEnabled = false
+            etFuncion.requestFocus()
+        }
     }
-    private fun initObserbers() {
+    private fun initListeners() {
+        with(binding){
+            etFuncion.pulsacionTeclaEnter{
+                etFuncionKeyEnter(etFuncion.text.toString().trim())
+            }
+            etLimiteInferior.pulsacionTeclaEnter {
+                etLimiteInferiorKeyEnter()
+            }
+            etLimiteSuperior.pulsacionTeclaEnter {
+                etLimiteSuperiorKeyEnter()
+            }
+            btnGraficar.setOnClickListener {
+                btnGraficaClick()
+            }
+        }
+    }
+    private fun initObservers() {
         homeViewModel.listaDatos.observe(this){ listaDatosNueva ->
-            if(!listaDatosNueva.isEmpty()) {
+            if(!listaDatosNueva.isNullOrEmpty()) {
                 binding.viewGrafica.setDatos(listaDatosNueva)
             }
         }
@@ -68,10 +68,11 @@ class MainActivity : AppCompatActivity() {
             mostrarErrorEditText(binding.etFuncion, "Debes de especificar una funcion")
             return
         }
-
-        binding.etLimiteInferior.isEnabled = true
-        binding.etLimiteSuperior.isEnabled = true
-        binding.etLimiteInferior.requestFocus()
+        with(binding){
+            etLimiteInferior.isEnabled = true
+            etLimiteSuperior.isEnabled = true
+            etLimiteInferior.requestFocus()
+        }
     }
     private fun etLimiteInferiorKeyEnter() {
         val str = binding.etLimiteInferior.text.toString()
@@ -82,41 +83,45 @@ class MainActivity : AppCompatActivity() {
         binding.etLimiteSuperior.requestFocus()
     }
     private fun etLimiteSuperiorKeyEnter() {
+        if(validarEditText()){
+            // --- TODO CORRECTO ---
+            ocultarTeclado()
+            with(binding){
+                btnGraficar.isEnabled = true
+                btnGraficar.performClick()
+            }
+        }
+    }
+    private fun btnGraficaClick(){
+        if(validarEditText()){
+            homeViewModel.setDatos(
+                binding.etFuncion.text.toString().trim(),
+                binding.etLimiteInferior.text.toString().toDouble(),
+                binding.etLimiteSuperior.text.toString().toDouble()
+            )
+        }
+    }
+    private fun validarEditText(): Boolean{
         val strFuncion = binding.etFuncion.text.toString().trim()
         val dLimiteInferior = binding.etLimiteInferior.text.toString().toDoubleOrNull()
         val dLimiteSuperior = binding.etLimiteSuperior.text.toString().toDoubleOrNull()
-
-        // MEJORA: Validaciones en cascada limpias usando cláusulas de guarda
         if (strFuncion.isEmpty()) {
             mostrarErrorEditText(binding.etFuncion, "Debes de especificar una funcion")
-            return
+            return false
         }
         if (dLimiteInferior == null) {
             mostrarErrorEditText(binding.etLimiteInferior, "Debes de especificar un límite inferior")
-            return
+            return false
         }
         if (dLimiteSuperior == null) {
             mostrarErrorEditText(binding.etLimiteSuperior, "Debes de especificar un límite superior")
-            return
+            return false
         }
         if (dLimiteInferior >= dLimiteSuperior) {
             mostrarErrorEditText(binding.etLimiteInferior, "El límite inferior tiene que ser menor que el límite superior")
-            return
+            return false
         }
-
-        // --- TODO CORRECTO ---
-        ocultarTeclado()
-        if(!binding.btnGraficar.isEnabled){
-            binding.btnGraficar.isEnabled = true
-        }
-        binding.btnGraficar.performClick()
-    }
-    private fun btnGraficaClick(){
-        homeViewModel.setDatos(
-            binding.etFuncion.text.toString().trim(),
-            binding.etLimiteInferior.text.toString().toDouble(),
-            binding.etLimiteSuperior.text.toString().toDouble()
-        )
+        return true
     }
 
     //######################################################
@@ -127,11 +132,9 @@ class MainActivity : AppCompatActivity() {
             val esAccionIme = actionId == EditorInfo.IME_ACTION_DONE ||
                     actionId == EditorInfo.IME_ACTION_GO ||
                     actionId == EditorInfo.IME_ACTION_SEARCH
-
             val esEnterFisico = ev != null &&
                     ev.keyCode == KeyEvent.KEYCODE_ENTER &&
                     ev.action == KeyEvent.ACTION_DOWN
-
             if (esAccionIme || esEnterFisico) {
                 teclaEnterPulsada()
                 true
