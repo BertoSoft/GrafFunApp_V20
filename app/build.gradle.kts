@@ -47,4 +47,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+
+
+    // Ciclo de vida y ViewModel para Android
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.11.0")
+    // Facilita la inicialización de ViewModels en las Activities (por delegación "by viewModels")
+    implementation("androidx.activity:activity-ktx:1.13.0")
+    // para usar exp4
+    implementation("net.objecthunter:exp4j:0.4.8")
 }

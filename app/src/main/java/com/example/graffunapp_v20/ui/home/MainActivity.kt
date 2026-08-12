@@ -6,13 +6,14 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.graffunapp_v20.databinding.ActivityMainBinding
-import com.example.graffunapp_v20.domain.MatUseCase
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +22,9 @@ class MainActivity : AppCompatActivity() {
 
         initUi()
         initListeners()
+        initObserbers()
     }
+
     //##############################################################
     // Funciones de Inicializacion
     //###############################################################
@@ -49,13 +52,20 @@ class MainActivity : AppCompatActivity() {
         binding.btnGraficar.isEnabled = false
         binding.etFuncion.requestFocus()
     }
+    private fun initObserbers() {
+        homeViewModel.listaDatos.observe(this){ listaDatosNueva ->
+            if(!listaDatosNueva.isEmpty()) {
+                binding.viewGrafica.setDatos(listaDatosNueva)
+            }
+        }
+    }
 
     //######################################################
     // Lógica de Negocio / Validaciones
     //######################################################
     private fun etFuncionKeyEnter(strFuncion: String) {
         if (strFuncion.isEmpty()) {
-            mostrarMensaje("Debes de especificar una funcion")
+            mostrarErrorEditText(binding.etFuncion, "Debes de especificar una funcion")
             return
         }
 
@@ -66,7 +76,7 @@ class MainActivity : AppCompatActivity() {
     private fun etLimiteInferiorKeyEnter() {
         val str = binding.etLimiteInferior.text.toString()
         if (str.isEmpty()) {
-            mostrarMensaje("Debes de especificar un límite inferior")
+            mostrarErrorEditText(binding.etLimiteInferior, "Debes de especificar un límite inferior")
             return
         }
         binding.etLimiteSuperior.requestFocus()
@@ -102,15 +112,11 @@ class MainActivity : AppCompatActivity() {
         binding.btnGraficar.performClick()
     }
     private fun btnGraficaClick(){
-        val listaDatos = MatUseCase().getAllDatos(
+        homeViewModel.setDatos(
             binding.etFuncion.text.toString().trim(),
             binding.etLimiteInferior.text.toString().toDouble(),
             binding.etLimiteSuperior.text.toString().toDouble()
         )
-
-        if(listaDatos.isEmpty()){
-            mostrarMensaje("Lista Vacia")
-        }
     }
 
     //######################################################
@@ -135,10 +141,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun mostrarErrorEditText(editText: EditText, mensaje: String) {
-        mostrarMensaje(mensaje)
+        setMensaje(mensaje)
         editText.requestFocus()
     }
-    private fun mostrarMensaje(mensaje: String) {
+    private fun setMensaje(mensaje: String) {
         Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show()
     }
     private fun ocultarTeclado() {
