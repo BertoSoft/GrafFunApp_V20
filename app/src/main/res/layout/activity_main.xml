@@ -7,81 +7,96 @@
     android:padding="16dp"
     android:background="#FFFFFF">
 
-    <!-- Campo para la Ecuación Matemática -->
-    <com.google.android.material.textfield.TextInputLayout
+    <!-- ScrollView para evitar que el teclado bloquee la pantalla en horizontal -->
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Ecuación matemática (ej: 3 * sin(x))"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        android:overScrollMode="never">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etFuncion"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:selectAllOnFocus="true"
-            android:inputType="textVisiblePassword" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:orientation="vertical">
 
-    <!-- Contenedor Horizontal para los Límites -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="12dp"
-        android:baselineAligned="false">
-
-        <!-- Límite Inferior (X Mínimo) -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="6dp"
-            android:hint="Límite Inferior (X Mín)"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etLimiteInferior"
+            <!-- Campo para la Ecuación Matemática -->
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:selectAllOnFocus="true"
-                android:inputType="numberSigned|numberDecimal" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="Ecuación matemática (ej: 3 * sin(x))"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <!-- Límite Superior (X Máximo) -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="6dp"
-            android:hint="Límite Superior (X Máx)"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFuncion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:selectAllOnFocus="true"
+                    android:inputType="textVisiblePassword" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etLimiteSuperior"
+            <!-- Contenedor Horizontal para los Límites -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:selectAllOnFocus="true"
-                android:inputType="numberSigned|numberDecimal" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp"
+                android:baselineAligned="false">
 
-    </LinearLayout>
+                <!-- Límite Inferior (X Mínimo) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:hint="Límite Inferior (X Mín)"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-    <!-- Botón para Graficar -->
-    <Button
-        android:id="@+id/btnGraficar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Calcular y Graficar"
-        android:layout_marginTop="16dp"
-        android:padding="12dp" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLimiteInferior"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:selectAllOnFocus="true"
+                        android:inputType="numberSigned|numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Espacio dedicado para la Gráfica Personalizada -->
+                <!-- Límite Superior (X Máximo) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:hint="Límite Superior (X Máx)"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLimiteSuperior"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:selectAllOnFocus="true"
+                        android:inputType="numberSigned|numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <!-- Botón para Graficar -->
+            <Button
+                android:id="@+id/btnGraficar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Calcular y Graficar"
+                android:layout_marginTop="16dp"
+                android:padding="12dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Espacio dedicado para la Gráfica Personalizada (Con Padding añadido) -->
     <com.example.graffunapp_v20.ui.grafica.VisorGrafica
         android:id="@+id/viewGrafica"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="16dp"
-        android:background="#FAFAFA" />
+        android:padding="32dp"
+        android:background="#000000" />
 
 </LinearLayout>

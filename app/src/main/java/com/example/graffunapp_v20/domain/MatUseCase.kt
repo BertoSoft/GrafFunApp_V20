@@ -13,6 +13,8 @@ class MatUseCase {
         var xMax = max
         var xMin = min
         var isTrigonometrica = false
+        val limiteYMaximo = 100.0 * (max - min)
+        val limiteYMinimo = -100.0 * (max - min)
 
         try {
             val strFuncionLimpia = strFuncion.lowercase().replace(" ", "")
@@ -36,10 +38,13 @@ class MatUseCase {
                 expresion.setVariable("x", x)
 
                 // Calculamos el valor real de Y en base al string ingresado
-                val y = expresion.evaluate()
+                var y = expresion.evaluate()
 
                 // MEJORA: Validamos que el resultado sea un número real válido (evita divisiones por 0 o infinitos)
                 if (!y.isNaN() && !y.isInfinite()) {
+                    // Si el valor se dispara por la asíntota, lo limitamos para que no rompa la escala del Visor
+                    if (y > limiteYMaximo) y = limiteYMaximo
+                    if (y < limiteYMinimo) y = limiteYMinimo
                     if(isTrigonometrica){
                         val xGrados = Math.toDegrees(x)
                         listaDatos.add(DatosXY(xGrados, y))
